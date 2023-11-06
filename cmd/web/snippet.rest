@@ -1,0 +1,7 @@
+@baseUrl = http://localhost:4000/snippet
+
+###
+post {{baseUrl}}/create
+
+###
+get {{baseUrl}}/view?id=1
