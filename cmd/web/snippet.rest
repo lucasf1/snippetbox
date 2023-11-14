@@ -4,6 +4,15 @@
 post {{baseUrl}}/create
 
 ###
+post {{baseUrl}}/view/1
+
+###
+get {{baseUrl}}/view/99
+
+###
+get {{baseUrl}}/missing
+
+###
 get http://localhost:4000/
 
 ###
