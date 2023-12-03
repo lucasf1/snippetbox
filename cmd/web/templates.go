@@ -2,10 +2,12 @@ package main
 
 import (
 	"html/template"
+	"io/fs"
 	"path/filepath"
 	"time"
 
 	"github.com/lucasf1/snippetbox/internal/models"
+	"github.com/lucasf1/snippetbox/ui"
 )
 
 type templateData struct {
@@ -30,7 +32,7 @@ func newTemplateCache() (map[string]*template.Template, error) {
 
 	cache := map[string]*template.Template{}
 
-	pages, err := filepath.Glob("./ui/html/pages/*.gohtml")
+	pages, err := fs.Glob(ui.Files, "./ui/html/pages/*.gohtml")
 	if err != nil {
 		return nil, err
 	}
@@ -39,17 +41,13 @@ func newTemplateCache() (map[string]*template.Template, error) {
 
 		name := filepath.Base(page)
 
-		ts, err := template.New(name).Funcs(functions).ParseFiles("./ui/html/base.gohtml")
-		if err != nil {
-			return nil, err
+		patterns := []string{
+			"html/base.gohtml",
+			"html/partials/*.gohtml",
+			page,
 		}
 
-		ts, err = ts.ParseGlob("./ui/html/partials/*.gohtml")
-		if err != nil {
-			return nil, err
-		}
-
-		ts, err = ts.ParseFiles(page)
+		ts, err := template.New(name).Funcs(functions).ParseFS(ui.Files, patterns...)
 		if err != nil {
 			return nil, err
 		}
